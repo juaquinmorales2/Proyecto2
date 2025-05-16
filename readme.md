@@ -1,5 +1,6 @@
 -Profe le agregue idioma espanol/ingles
 -Tambien anadi la traduccion en el stays.js para que las descripciones esten tambien en espanol
+-Agregue una intro
 
 # ¡Bienvenidos al proyecto! 🎉
 

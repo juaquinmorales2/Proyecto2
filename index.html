@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Windbnb - Stays in Finland</title>
+  <title>Windbnb</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module" src="/Proyecto2/src/scripts/main.js" defer></script>
+  <script type="module" src="/src/scripts/main.js" defer></script>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="bg-gray-50">
+  <div id="intro" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <img src="/src/images/icons/logo-f7862584.svg" alt="Logo" class="w-[300px] h-[300px] opacity-0 animate-logoEnter">
+  </div>
+
   <header class="bg-white shadow-sm py-4 px-6 sticky top-0 z-10">
     <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center">
-        <img src="/Proyecto2/src/images/icons/logo-f7862584.svg" alt="Windbnb Logo" class="h-10 mr-4" />
+      <div class="flex items-center" id="logoUp">
+        <img src="/src/images/icons/logo-f7862584.svg" alt="Windbnb Logo" class="h-10 mr-4" />
       </div>
-      
+
       <div class="hidden md:flex gap-2 bg-white rounded-lg shadow-sm border border-gray-200 p-1">
         <div class="relative">
           <button id="location-toggle" class="px-4 py-2 text-left w-48 border-r border-gray-200">
@@ -22,11 +28,12 @@
             <p id="location-value" class="text-sm font-medium">Add location</p>
           </button>
           <div id="location-dropdown" class="absolute z-20 bg-white shadow-lg rounded-lg mt-1 hidden w-64 p-4">
-            <div class="space-y-2">
-            </div>
+            <input type="text" id="location-search" placeholder="Search locations..."
+              class="w-full p-2 mb-2 border rounded">
+            <div id="location-options" class="space-y-2"></div>
           </div>
         </div>
-        
+
         <div class="relative">
           <button id="guest-toggle" class="px-4 py-2 text-left w-40 border-r border-gray-200">
             <p class="text-xs text-gray-500">GUESTS</p>
@@ -37,30 +44,35 @@
               <p class="font-medium">Adults</p>
               <p class="text-xs text-gray-500 mb-2">Ages 13 or above</p>
               <div class="flex items-center">
-                <button id="adult-decrement" class="border rounded-full w-6 h-6 flex items-center justify-center">-</button>
+                <button id="adult-decrement"
+                  class="border rounded-full w-6 h-6 flex items-center justify-center">-</button>
                 <span id="adult-count" class="mx-4">0</span>
-                <button id="adult-increment" class="border rounded-full w-6 h-6 flex items-center justify-center">+</button>
+                <button id="adult-increment"
+                  class="border rounded-full w-6 h-6 flex items-center justify-center">+</button>
               </div>
             </div>
             <div class="mb-4">
               <p class="font-medium">Children</p>
               <p class="text-xs text-gray-500 mb-2">Ages 2-12</p>
               <div class="flex items-center">
-                <button id="child-decrement" class="border rounded-full w-6 h-6 flex items-center justify-center">-</button>
+                <button id="child-decrement"
+                  class="border rounded-full w-6 h-6 flex items-center justify-center">-</button>
                 <span id="child-count" class="mx-4">0</span>
-                <button id="child-increment" class="border rounded-full w-6 h-6 flex items-center justify-center">+</button>
+                <button id="child-increment"
+                  class="border rounded-full w-6 h-6 flex items-center justify-center">+</button>
               </div>
             </div>
           </div>
         </div>
-        
+
         <button id="search-button" class="bg-red-500 text-white p-2 rounded-lg flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </button>
       </div>
-      
+
       <button id="mobile-menu-button" class="md:hidden bg-white border border-gray-200 rounded-lg p-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -74,7 +86,7 @@
       <h2 id="stays-title" class="text-xl font-bold text-gray-800">Stays in Finland</h2>
       <p id="stays-count" class="text-sm text-gray-600">12+ stays</p>
     </div>
-    
+
     <div id="stays-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     </div>
   </main>
@@ -89,41 +101,51 @@
       <h3 class="text-lg font-medium">Edit your search</h3>
       <div class="w-6"></div>
     </div>
-    
+
     <div class="space-y-6">
       <div class="border-b pb-4">
         <p class="text-xs font-medium text-gray-500 mb-2">LOCATION</p>
-        <p id="mobile-location-value" class="text-gray-800">Add location</p>
+        <div id="mobile-location-options" class="hidden">
+        </div>
+        <button id="mobile-location-toggle" class="w-full text-left">
+          <p id="mobile-location-value" class="text-gray-800">Add location</p>
+        </button>
       </div>
-      
+
       <div class="border-b pb-4">
         <p class="text-xs font-medium text-gray-500 mb-2">GUESTS</p>
         <p id="mobile-guest-value" class="text-gray-800">Add guests</p>
       </div>
-      
+
       <div class="mb-4">
         <p class="font-medium mb-2">Adults</p>
         <p class="text-xs text-gray-500 mb-2">Ages 13 or above</p>
         <div class="flex items-center">
-          <button id="mobile-adult-decrement" class="border rounded-full w-8 h-8 flex items-center justify-center">-</button>
+          <button id="mobile-adult-decrement"
+            class="border rounded-full w-8 h-8 flex items-center justify-center">-</button>
           <span id="mobile-adult-count" class="mx-4">0</span>
-          <button id="mobile-adult-increment" class="border rounded-full w-8 h-8 flex items-center justify-center">+</button>
+          <button id="mobile-adult-increment"
+            class="border rounded-full w-8 h-8 flex items-center justify-center">+</button>
         </div>
       </div>
-      
+
       <div class="mb-6">
         <p class="font-medium mb-2">Children</p>
         <p class="text-xs text-gray-500 mb-2">Ages 2-12</p>
         <div class="flex items-center">
-          <button id="mobile-child-decrement" class="border rounded-full w-8 h-8 flex items-center justify-center">-</button>
+          <button id="mobile-child-decrement"
+            class="border rounded-full w-8 h-8 flex items-center justify-center">-</button>
           <span id="mobile-child-count" class="mx-4">0</span>
-          <button id="mobile-child-increment" class="border rounded-full w-8 h-8 flex items-center justify-center">+</button>
+          <button id="mobile-child-increment"
+            class="border rounded-full w-8 h-8 flex items-center justify-center">+</button>
         </div>
       </div>
-      
-      <button id="mobile-search-button" class="w-full bg-red-500 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+
+      <button id="mobile-search-button"
+        class="w-full bg-red-500 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         Search
       </button>
@@ -134,20 +156,23 @@
     <div class="flex gap-2 bg-white rounded-full shadow-lg p-1 border border-gray-200">
       <button id="lang-es" class="w-8 h-8 rounded-full flex items-center justify-center">
         <svg viewBox="0 0 640 480" width="24" height="18">
-          <path fill="#c60b1e" d="M0 0h640v480H0z"/>
-          <path fill="#ffc400" d="M0 120h640v240H0z"/>
+          <path fill="#c60b1e" d="M0 0h640v480H0z" />
+          <path fill="#ffc400" d="M0 120h640v240H0z" />
         </svg>
       </button>
       <button id="lang-en" class="w-8 h-8 rounded-full flex items-center justify-center">
         <svg viewBox="0 0 640 480" width="24" height="18">
-          <path fill="#012169" d="M0 0h640v480H0z"/>
-          <path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z"/>
-          <path fill="#C8102E" d="m424 281 216 159v40L369 281h55zm-184 20 6 35L54 480H0l240-179zM640 0v3L391 191l2-44L590 0h50zM0 0l239 176h-60L0 42V0z"/>
-          <path fill="#FFF" d="M241 0v480h160V0H241zM0 160v160h640V160H0z"/>
-          <path fill="#C8102E" d="M0 193v96h640v-96H0zM273 0v480h96V0h-96z"/>
+          <path fill="#012169" d="M0 0h640v480H0z" />
+          <path fill="#FFF"
+            d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z" />
+          <path fill="#C8102E"
+            d="m424 281 216 159v40L369 281h55zm-184 20 6 35L54 480H0l240-179zM640 0v3L391 191l2-44L590 0h50zM0 0l239 176h-60L0 42V0z" />
+          <path fill="#FFF" d="M241 0v480h160V0H241zM0 160v160h640V160H0z" />
+          <path fill="#C8102E" d="M0 193v96h640v-96H0zM273 0v480h96V0h-96z" />
         </svg>
       </button>
     </div>
   </div>
 </body>
+
 </html>

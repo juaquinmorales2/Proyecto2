@@ -1,14 +1,11 @@
-/* Base styles */
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Transitions */
 #location-dropdown, #guest-dropdown {
   transition: all 0.2s ease;
 }
 
-/* Card hover effect */
 .bg-white {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -17,12 +14,10 @@ body {
   transform: translateY(-2px);
 }
 
-/* Mobile filters animation */
 #mobile-filters {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -40,18 +35,113 @@ body {
   background: #555;
 }
 
-/* SVG flags */
 button svg {
   pointer-events: none;
 }
 
-/* Ensure images don't overflow */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Hide scrollbar when modal is open */
 body.modal-open {
   overflow: hidden;
+}
+
+@keyframes logoEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.animate-logoEnter {
+  animation: logoEnter 1.5s ease-out forwards;
+}
+
+.fade-out {
+  animation: fadeOut 1s ease-in forwards;
+}
+
+#mobile-location-options {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.mobile-city-option {
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+}
+
+.mobile-city-option:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-city-option:hover {
+  background-color: #f3f4f6;
+}
+
+#location-search {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+#location-search:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+/* Estilos para el modal mobile */
+#mobile-filters {
+  transition: all 0.3s ease;
+  transform: translateY(100%);
+}
+
+#mobile-filters:not(.hidden) {
+  transform: translateY(0);
+}
+
+#mobile-filters .mb-6 {
+  display: none;
+}
+
+#mobile-location-options {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 8px;
+  border-radius: 8px;
+  background-color: #f8fafc;
+}
+
+.mobile-city-option {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mobile-city-option:last-child {
+  border-bottom: none;
+}
+
+.mobile-city-option:hover {
+  background-color: #f1f5f9;
 }

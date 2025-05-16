@@ -1,4 +1,23 @@
+
 import { stays } from './stays.js';
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const intro = document.getElementById("intro");
+    intro.classList.add("fade-out");
+
+    setTimeout(() => {
+      intro.style.display = "none";
+    }, 1000);
+  }, 2500);
+});
+
+document.getElementById("logoUp").addEventListener("click", function(e) {
+  e.preventDefault();
+  const intro = document.getElementById("intro");
+  intro.style.display = "none";
+  window.location.href = "/index.html";
+});
 
 const locationToggle = document.getElementById('location-toggle');
 const locationValue = document.getElementById('location-value');
@@ -30,6 +49,8 @@ const mobileChildDecrement = document.getElementById('mobile-child-decrement');
 const mobileSearchButton = document.getElementById('mobile-search-button');
 const langEs = document.getElementById('lang-es');
 const langEn = document.getElementById('lang-en');
+const locationSearch = document.getElementById('location-search');
+const locationOptions = document.getElementById('location-options');
 
 let currentLanguage = 'en';
 let selectedCity = null;
@@ -74,47 +95,51 @@ const translations = {
 };
 
 function init() {
-  renderCities();
+  setupLocationSearch();
   updateGuestText();
   renderStays();
   setLanguage(currentLanguage);
-  
   setupEventListeners();
 }
 
 function setupEventListeners() {
-
   locationToggle.addEventListener('click', toggleLocationDropdown);
   guestToggle.addEventListener('click', toggleGuestDropdown);
-  
+
   adultIncrement.addEventListener('click', () => updateGuests('adult', 1));
   adultDecrement.addEventListener('click', () => updateGuests('adult', -1));
   childIncrement.addEventListener('click', () => updateGuests('child', 1));
   childDecrement.addEventListener('click', () => updateGuests('child', -1));
-  
+
   searchButton.addEventListener('click', applyFilters);
-  
+
   mobileMenuButton.addEventListener('click', () => {
     mobileFilters.classList.remove('hidden');
     document.body.classList.add('modal-open');
+    updateMobileFilters();
   });
-  
+
   closeFilters.addEventListener('click', () => {
     mobileFilters.classList.add('hidden');
     document.body.classList.remove('modal-open');
   });
-  
-  // Mobile guest counter buttons
+
   mobileAdultIncrement.addEventListener('click', () => updateMobileGuests('adult', 1));
   mobileAdultDecrement.addEventListener('click', () => updateMobileGuests('adult', -1));
   mobileChildIncrement.addEventListener('click', () => updateMobileGuests('child', 1));
   mobileChildDecrement.addEventListener('click', () => updateMobileGuests('child', -1));
-  
+
   mobileSearchButton.addEventListener('click', applyMobileFilters);
-  
+
+  document.getElementById('mobile-location-toggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    const mobileLocationOptions = document.getElementById('mobile-location-options');
+    mobileLocationOptions.classList.toggle('hidden');
+  });
+
   langEs.addEventListener('click', () => setLanguage('es'));
   langEn.addEventListener('click', () => setLanguage('en'));
-  
+
   document.addEventListener('click', (e) => {
     if (!locationToggle.contains(e.target) && !locationDropdown.contains(e.target)) {
       locationDropdown.classList.add('hidden');
@@ -125,10 +150,20 @@ function setupEventListeners() {
   });
 }
 
-function renderCities() {
-  const cities = Array.from(new Set(stays.map(stay => stay.city)));
-  
-  locationDropdown.innerHTML = cities.map(city => `
+function setupLocationSearch() {
+  locationSearch.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const cities = Array.from(new Set(stays.map(stay => stay.city)));
+    const filteredCities = cities.filter(city => 
+      city.toLowerCase().includes(searchTerm)
+    );
+
+    renderCityOptions(filteredCities);
+  });
+}
+
+function renderCityOptions(cities) {
+  locationOptions.innerHTML = cities.map(city => `
     <div class="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer city-option">
       <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -137,7 +172,7 @@ function renderCities() {
       <span class="city-name">${city}</span>
     </div>
   `).join('');
-  
+
   document.querySelectorAll('.city-option').forEach(option => {
     option.addEventListener('click', (e) => {
       const cityName = e.currentTarget.querySelector('.city-name').textContent;
@@ -145,6 +180,32 @@ function renderCities() {
       locationValue.textContent = cityName;
       mobileLocationValue.textContent = cityName;
       locationDropdown.classList.add('hidden');
+      locationSearch.value = '';
+      locationOptions.innerHTML = '';
+    });
+  });
+}
+
+function renderMobileCities() {
+  const cities = Array.from(new Set(stays.map(stay => stay.city)));
+  const mobileLocationOptions = document.getElementById('mobile-location-options');
+
+  mobileLocationOptions.innerHTML = cities.map(city => `
+    <div class="flex items-center p-3 hover:bg-gray-100 rounded cursor-pointer mobile-city-option">
+      <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span class="mobile-city-name">${city}</span>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.mobile-city-option').forEach(option => {
+    option.addEventListener('click', (e) => {
+      const cityName = e.currentTarget.querySelector('.mobile-city-name').textContent;
+      selectedCity = cityName;
+      mobileLocationValue.textContent = cityName;
+      document.getElementById('mobile-location-options').classList.add('hidden');
     });
   });
 }
@@ -153,6 +214,9 @@ function toggleLocationDropdown(e) {
   e.stopPropagation();
   guestDropdown.classList.add('hidden');
   locationDropdown.classList.toggle('hidden');
+  if (!locationDropdown.classList.contains('hidden')) {
+    locationSearch.focus();
+  }
 }
 
 function toggleGuestDropdown(e) {
@@ -176,16 +240,26 @@ function updateGuests(type, change) {
 
 function updateMobileGuests(type, change) {
   updateGuests(type, change);
+  updateGuestText();
 }
 
 function updateGuestText() {
   const totalGuests = adults + children;
-  const guestText = totalGuests === 0 
-    ? translations[currentLanguage].addGuests 
-    : `${totalGuests} ${currentLanguage === 'en' ? 'guest' : 'huésped'}${totalGuests !== 1 ? (currentLanguage === 'en' ? 's' : 'es') : ''}`;
-  
+  const guestText = totalGuests === 0
+    ? translations[currentLanguage].addGuests
+    : `${totalGuests} ${translations[currentLanguage].guests.toLowerCase()}`;
+
   guestValue.textContent = guestText;
   mobileGuestValue.textContent = guestText;
+}
+
+function updateMobileFilters() {
+  mobileAdultCount.textContent = adults;
+  mobileChildCount.textContent = children;
+  mobileLocationValue.textContent = selectedCity || translations[currentLanguage].addLocation;
+  mobileGuestValue.textContent = (adults + children) === 0 
+    ? translations[currentLanguage].addGuests 
+    : `${adults + children} ${translations[currentLanguage].guests.toLowerCase()}`;
 }
 
 function applyFilters() {
@@ -232,45 +306,45 @@ function renderStays() {
     </div>
   `;
 
-  staysCount.textContent = filteredStays.length > 12 
-    ? `12+ ${translations[currentLanguage].staysCount}` 
+  staysCount.textContent = filteredStays.length > 12
+    ? `12+ ${translations[currentLanguage].staysCount}`
     : `${filteredStays.length} ${translations[currentLanguage].staysCount}`;
-  
-  staysTitle.textContent = selectedCity 
+
+  staysTitle.textContent = selectedCity
     ? `${translations[currentLanguage].staysIn} ${selectedCity}`
     : `${translations[currentLanguage].staysIn} Finland`;
 }
 
 function setLanguage(lang) {
   currentLanguage = lang;
-  
+
   document.querySelector('#location-toggle p:first-child').textContent = translations[lang].location;
   locationValue.textContent = selectedCity || translations[lang].addLocation;
   document.querySelector('#guest-toggle p:first-child').textContent = translations[lang].guests;
   updateGuestText();
-  
+
   document.querySelectorAll('#guest-dropdown p')[0].textContent = translations[lang].adults;
   document.querySelectorAll('#guest-dropdown p')[1].textContent = translations[lang].agesAdults;
   document.querySelectorAll('#guest-dropdown p')[2].textContent = translations[lang].children;
   document.querySelectorAll('#guest-dropdown p')[3].textContent = translations[lang].agesChildren;
-  
+
   document.querySelector('#mobile-filters h3').textContent = translations[lang].editSearch;
   document.querySelectorAll('#mobile-filters p')[0].textContent = translations[lang].location;
   mobileLocationValue.textContent = selectedCity || translations[lang].addLocation;
   document.querySelectorAll('#mobile-filters p')[1].textContent = translations[lang].guests;
-  
+
   document.querySelectorAll('#mobile-filters p')[2].textContent = translations[lang].adults;
   document.querySelectorAll('#mobile-filters p')[3].textContent = translations[lang].agesAdults;
   document.querySelectorAll('#mobile-filters p')[4].textContent = translations[lang].children;
   document.querySelectorAll('#mobile-filters p')[5].textContent = translations[lang].agesChildren;
-  
+
   mobileSearchButton.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
     ${translations[lang].search}
   `;
-  
+
   renderStays();
 }
 
