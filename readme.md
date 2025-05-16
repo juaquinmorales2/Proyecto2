@@ -1,3 +1,6 @@
+-Profe le agregue idioma espanol/ingles
+-Tambien anadi la traduccion en el stays.js para que las descripciones esten tambien en espanol
+
 # ¡Bienvenidos al proyecto! 🎉
 
 Este repositorio es una plantilla diseñada para ayudarte a comenzar rápidamente. Sigue estos pasos para configurar tu entorno y empezar a trabajar:
